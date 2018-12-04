@@ -17,8 +17,7 @@ def setup_dmm(addr):
     inst.write("MEM OFF")
     inst.write("END ALWAYS")
     inst.write("NDIG 9")
-    inst.write("DISP MSG,\"                 \"")
-    inst.write("DISP OFF")
+    inst.write("DISP OFF,\"                 \"")
     return inst
 
 def run_acal(inst):
