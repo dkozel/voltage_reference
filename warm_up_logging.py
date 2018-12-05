@@ -55,7 +55,7 @@ def main():
 
     start_time = datetime.now()
     measure_interval = timedelta(hours=12)
-    target_time = start_time.replace(microsecond=0, second=0, minute=0, hour=18)
+    target_time = start_time.replace(microsecond=0, second=0, minute=0, hour=20)
 
     for x in range(1, 10):
         print "Next Measurement at {}".format(target_time)
