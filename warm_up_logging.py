@@ -24,7 +24,7 @@ def run_acal(inst):
     inst.write("ACAL 1")
 
 def record_cal_values(inst, file_handle):
-    test_time = time.strftime("%d/%m/%Y-%H:%M:%S")
+    test_time = datetime.now().replace(microsecond=0).isoformat() + 'Z'
 
     inst.write("TEMP?")
     temp = inst.read().strip()
