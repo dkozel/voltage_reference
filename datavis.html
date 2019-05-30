@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script>
+window.onload = function () {
+
+  // Chart Data
+  var roomTempData = [];
+  var temp1Data = [];
+  var temp2Data = [];
+  var temp3Data = [];
+  var pressureData = [];
+  var humidityData = [];
+  
+  var tempChart = new CanvasJS.Chart("temperatureChartContainer", {
+    title :{
+      text: "Temperature"
+    },
+    axisY: {
+      title: "Temperature (in C)",
+      includeZero: false,
+      suffix: " °C"
+    },      
+    data: [
+    {
+      name: "Room Temperature",
+      type: "spline",
+      yValueFormatString: "#0.## C",
+      showInLegend: true,
+      dataPoints: roomTempData 
+    },
+    {
+      name: "Channel 1",
+      type: "spline",
+      yValueFormatString: "#0.## C",
+      showInLegend: true,
+      dataPoints: temp1Data 
+    },
+    {
+      name: "Channel 2",
+      type: "spline",
+      yValueFormatString: "#0.## C",
+      showInLegend: true,
+      dataPoints: temp2Data
+    },
+    {
+      name: "Channel 3",
+      type: "spline",
+      yValueFormatString: "#0.## C",
+      showInLegend: true,
+      dataPoints: temp3Data 
+    },
+    ]
+  });
+  var pressureChart = new CanvasJS.Chart("pressureChartContainer", {
+    title :{
+      text: "Pressure"
+    },
+    axisY: {
+      title: "Pressure (in mB)",
+      includeZero: false,
+      suffix: " mB"
+    },      
+    data: [
+    {
+      name: "Room Pressure",
+      type: "spline",
+      yValueFormatString: "#0.## mB",
+      showInLegend: true,
+      dataPoints: pressureData 
+    }]
+  });
+  var humidityChart= new CanvasJS.Chart("humidityChartContainer", {
+    title :{
+      text: "Humidity"
+    },
+    axisY: {
+      title: "Humidity (in %)",
+      includeZero: false,
+      suffix: " %"
+    },      
+    data: [
+    {
+      name: "Room Humidity",
+      type: "spline",
+      yValueFormatString: "#0.## %",
+      showInLegend: true,
+      dataPoints: humidityData 
+    }]
+  });
+
+  var xVal = 0;
+  var yVal = 0; 
+  var dataLength = 20; // number of dataPoints visible at any point
+
+  var updateInterval = 1000;
+
+  var connection = new WebSocket('ws://localhost:8001/websocket');
+
+  connection.onmessage = function(event) {
+    var measurement = JSON.parse(event.data);
+    console.log("Data received");
+
+    roomTempData.push({x: xVal, y: measurement.roomTemp});
+    temp1Data.push({x: xVal, y: measurement.temp1});
+    temp2Data.push({x: xVal, y: measurement.temp2});
+    temp3Data.push({x: xVal, y: measurement.temp3});
+    pressureData.push({x: xVal, y: measurement.pressure});
+    humidityData.push({x: xVal, y: measurement.humidity});
+    
+    xVal++;
+    
+    if (temp1Data.length > dataLength) {
+      roomTempData.shift();
+      temp1Data.shift();
+      temp2Data.shift();
+      temp3Data.shift();
+      pressureData.shift();
+      humidityData.shift();
+    }
+
+    tempChart.render();
+    humidityChart.render();
+    pressureChart.render();
+  }
+}
+
+</script>
+</head>
+<body>
+  <div id="humidityChartContainer" style="height: 250px; width:100%;"></div>
+  <div id="pressureChartContainer" style="height: 250px; width:100%;"></div>
+  <div id="temperatureChartContainer" style="height: 250px; width:100%;"></div>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>
