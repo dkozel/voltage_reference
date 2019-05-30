@@ -93,9 +93,10 @@ window.onload = function () {
   var yVal = 0; 
   var dataLength = 20; // number of dataPoints visible at any point
 
-  var updateInterval = 1000;
-
-  var connection = new WebSocket('ws://localhost:8001/websocket');
+  // Setup WebSocket connection
+  var urlParams = new URLSearchParams(window.location.search);
+  var serverURL = urlParams.get('serverURL');
+  var connection = new WebSocket('ws://' + serverURL + ':8001/websocket');
 
   connection.onmessage = function(event) {
     var measurement = JSON.parse(event.data);
